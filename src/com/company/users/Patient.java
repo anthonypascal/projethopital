@@ -25,7 +25,13 @@ public class Patient extends User {
         return patients.get(string);
     }
 
-    public Patient() {
+    public Patient(String lastName, String firstName, String secSoc, String postalAdress, String phoneNumber, String mailAdress) {
+        setName(lastName);
+        setFirstName(firstName);
+        this.secSoc = secSoc;
+        this.postalAdress = postalAdress;
+        this.phoneNumber = phoneNumber;
+        this.mailAdress = mailAdress;
     }
 
     @Override
@@ -85,13 +91,13 @@ public class Patient extends User {
     }
 
     public static void createNewPatientMenu(String lastName, String firstName) {
-        System.out.println(lastName + " " + firstName);
-
-        Patient patient = new Patient();
-        patient.setName(lastName);
-        patient.setFirstName(firstName);
 
         Scanner scanner = Main.getScanner();
+
+        String mailAdress;
+        String postalAdress;
+        String phoneNumber;
+        String secSoc;
 
         try (scanner) {
             String menu = "===============\n" +
@@ -116,7 +122,7 @@ public class Patient extends User {
                     }
 
                     if (isNew) {
-                        patient.setMailAdress(args[0]);
+                        mailAdress = args[0];
                         break;
                     }
                 }
@@ -134,7 +140,7 @@ public class Patient extends User {
                 if (command.startsWith("exit")) {
                     return;
                 } else if (args.length > 0){
-                    patient.setPostalAdress(command);
+                    postalAdress = command;
                     break;
                 }
             }
@@ -151,7 +157,7 @@ public class Patient extends User {
                 if (command.startsWith("exit")) {
                     return;
                 } else if (args.length > 0){
-                    patient.setPhoneNumber(command);
+                    phoneNumber = command;
                     break;
                 }
             }
@@ -167,12 +173,13 @@ public class Patient extends User {
                 if (command.startsWith("exit")) {
                     return;
                 } else if (args.length > 0) {
-                    patient.setSecSoc(command);
+                    secSoc = command;
                     break;
                 }
             }
 
-            Patient.gets(patient.getMailAdress(), patient);
+            Patient patient = Patient.gets(mailAdress, new Patient(lastName, firstName, secSoc, postalAdress, phoneNumber, mailAdress));
+            System.out.println(patient.getName() + " " + patient.getFirstName());
         }
 
     }
