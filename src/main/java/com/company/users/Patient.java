@@ -92,14 +92,15 @@ public class Patient extends User {
 
     public static void createNewPatientMenu(String lastName, String firstName) {
 
-        Scanner scanner = Main.getScanner();
+        Scanner scanner = new Scanner(System.in);
 
         String mailAdress;
         String postalAdress;
         String phoneNumber;
         String secSoc;
 
-        try (scanner) {
+        //try (scanner) {
+        try {
             String menu = "===============\n" +
                     "Enter Mail Adress (UNIQUE) :\n" +
                     "===============\n";
@@ -180,6 +181,8 @@ public class Patient extends User {
 
             Patient patient = Patient.gets(mailAdress, new Patient(lastName, firstName, secSoc, postalAdress, phoneNumber, mailAdress));
             System.out.println(patient.getName() + " " + patient.getFirstName());
+        } catch (IllegalStateException e){
+            System.out.println("erreur création Patient");
         }
 
     }

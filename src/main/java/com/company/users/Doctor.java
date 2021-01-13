@@ -104,9 +104,9 @@ public class Doctor extends User {
         String hourlyRate;
         String hospital;
 
-        Scanner scanner = Main.getScanner();
+        Scanner scanner = new Scanner(System.in);
 
-        try (scanner) {
+        try {
             String menu = "===============\n" +
                     "Enter specialty :\n" +
                     "===============\n";
@@ -175,6 +175,8 @@ public class Doctor extends User {
             }
 
             Doctor.gets(identificationNumber, new Doctor(identificationNumber, specialty, degree, hourlyRate, hospital));
+        } catch (IllegalStateException e){
+            System.out.println("erreur création Doctor");
         }
 
     }

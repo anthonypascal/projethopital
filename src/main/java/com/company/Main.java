@@ -6,13 +6,13 @@ import com.company.users.Patient;
 import java.util.Scanner;
 
 public class Main {
-
     private final static Scanner scanner = new Scanner( System.in );
 
     public static void main(String[] args) {
-	// write your code here
+        // write your code here
         System.out.println("Hello World");
-        try ( Scanner scanner = new Scanner( System.in ) ) {
+        //try ( Scanner scanner = new Scanner( System.in ) ) {
+        try {
 
             String menu = "===============\n" +
                     "Choose your command :\n" +
@@ -36,6 +36,8 @@ public class Main {
                 }
             }
 
+        } catch (IllegalStateException e) {
+            System.out.println("erreur main");
         }
     }
 

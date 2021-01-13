@@ -1,0 +1,26 @@
+saves:
+    type: database
+    adress: X.X.X.X
+    port: XXXXX
+    platform: mysql
+    user: root
+    password: ""
+
+movement:
+    keywords:
+        - "go to"
+        - "walk to"
+        - "run toward" 
+    directions:
+        north:
+            - "north"
+            - "N"
+        west:
+            - "west"
+            - "W"
+        east:
+            - "east"
+            - "E"
+        south:
+            - "south"
+            - "S"

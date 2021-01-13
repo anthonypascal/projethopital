@@ -1,0 +1,40 @@
+route:
+    name: "La route de brique jaune"
+    description: 
+      - "Soooomewheere, over the rainboooow !"
+      - "Pilipipi !"
+    can-access:
+        north: forest
+        west: hills
+        east: building
+        south: valley
+
+forest:
+    name: "Bois Perdus"
+    description:
+      - "Hey, listen ! Hey hey hey !"
+    can-access:
+        south: route
+        
+hills:
+    name: "Collines"
+    description:
+      - "Blep"
+    can-access:
+        north: forest
+        
+valley:
+    name: "Vallée"
+    description:
+      - "I'm on a rouuuuundabout !"
+    can-access:
+        north: route
+        west: hills
+        
+building:
+    name: "Bâtiment"
+    description: 
+      - "La maison qui rend fou..."
+    spawn-point: true
+    can-access:
+        west: route
