@@ -1,7 +1,5 @@
 package com.company.users;
 
-import com.company.Main;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
