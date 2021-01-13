@@ -8,7 +8,7 @@ public class Doctor extends User {
 
     private static Map<Integer, Doctor> doctors = new HashMap<Integer, Doctor>();
 
-    private int identificationNumber;
+    private int matricule;
     private String specialty;
     private String degree;
     private String hourlyRate;
@@ -22,9 +22,9 @@ public class Doctor extends User {
         return doctors.get(integer);
     }
 
-    public Doctor(int identificationNumber, String specialty, String degree, String hourlyRate, String hospital) {
+    public Doctor(int matricule, String specialty, String degree, String hourlyRate, String hospital) {
 
-        this.identificationNumber = identificationNumber;
+        this.matricule = matricule;
         this.specialty = specialty;
         this.degree = degree;
         this.hourlyRate = hourlyRate;
@@ -42,8 +42,8 @@ public class Doctor extends User {
         return super.getFirstName();
     }
 
-    public int getIdentificationNumber() {
-        return identificationNumber;
+    public int getMatricule() {
+        return matricule;
     }
 
     public String getSpecialty() {
@@ -60,7 +60,7 @@ public class Doctor extends User {
 
     public String getHospital() { return hospital; }
 
-    public static Map<Integer, Doctor> getPatients() {
+    public static Map<Integer, Doctor> getDoctors() {
         return doctors;
     }
 
@@ -75,7 +75,7 @@ public class Doctor extends User {
         super.setFirstName(firstName);
     }
 
-    public void setIdentificationNumber(int identificationNumber) { this.identificationNumber = identificationNumber; }
+    public void setMatricule(int matricule) { this.matricule = matricule; }
 
     public void setSpecialty(String specialty) {
         this.specialty = specialty;
@@ -96,7 +96,7 @@ public class Doctor extends User {
     public static void createNewDoctorMenu(String lastName, String firstName) {
         System.out.println(lastName + " " + firstName);
 
-        int identificationNumber = 0;
+        int matricule;
         String specialty;
         String degree;
         String hourlyRate;
@@ -105,7 +105,35 @@ public class Doctor extends User {
         Scanner scanner = new Scanner(System.in);
 
         try {
+
             String menu = "===============\n" +
+                    "Enter an identification number :\n" +
+                    "===============\n";
+
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return;
+                } else if (args.length > 0){
+                    boolean isNew = true;
+                    for (int listedMatricule : Doctor.getDoctors().keySet()) {
+                        if (listedMatricule == Integer.parseInt(args[0])) {
+                            System.out.println("Ce matricule de médecin est déjà utilisé !");
+                            isNew = false;
+                            break;
+                        }
+                    }
+                    if (isNew) {
+                        matricule = Integer.parseInt(args[0]);
+                        break;
+                    }
+                }
+            }
+
+            menu = "===============\n" +
                     "Enter specialty :\n" +
                     "===============\n";
 
@@ -172,7 +200,7 @@ public class Doctor extends User {
                 }
             }
 
-            Doctor.gets(identificationNumber, new Doctor(identificationNumber, specialty, degree, hourlyRate, hospital));
+            Doctor.gets(matricule, new Doctor(matricule, specialty, degree, hourlyRate, hospital));
         } catch (IllegalStateException e){
             System.out.println("erreur création Doctor");
         }
