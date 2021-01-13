@@ -6,15 +6,29 @@ import com.company.users.Patient;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Rdv {
+
+    private static final Map<String, Rdv> rendezVous = new HashMap<>();
 
     private String place;
     private Date date;
     private int secSoc;
     private int matricule;
 
+
+    public static Rdv gets(String name, Rdv rdv) {
+        if (!rendezVous.containsKey(name)) {
+            System.out.println("New rdv added.");
+            rendezVous.put(name, rdv);
+        } else {
+            System.out.println("Rdv already exist");
+        }
+        return rendezVous.get(name);
+    }
 
     public Rdv(String place, Date date, int secSoc, int matricule) {
         this.place = place;
@@ -24,18 +38,43 @@ public class Rdv {
     }
 
     public static void createNewDoctorMenu() {
-        System.out.println();
-
         int matricule;
         int secSoc;
         Date date;
+        String name;
 
 
         Scanner scanner = new Scanner(System.in);
 
         try {
-
             String menu = "===============\n" +
+                    "Enter a rendez-vous name :\n" +
+                    "in one word :\n" +
+                    "===============\n";
+
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return;
+                } else if (args.length == 1){
+                    boolean isExist = false;
+                    for (String listedRdv : rendezVous.keySet()) {
+                        if (command.equalsIgnoreCase(listedRdv)) {
+                            isExist = true;
+                            break;
+                        }
+                    }
+                    if (isExist) {
+                        name = command;
+                        break;
+                    }
+                }
+            }
+
+            menu = "===============\n" +
                     "Enter a Doctor Matricule :\n" +
                     "===============\n";
 
@@ -111,8 +150,8 @@ public class Rdv {
                     return;
                 } else if (args.length == 2){
                     try {
-                        Date date1 = new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(command);
-                        System.out.println(args[0] + "\t" + date1);
+                        date = new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(command);
+                        System.out.println(args[0] + "\t" + date);
                         break;
                     } catch (ParseException parseException) {
                         System.out.println("Mauvais format de date");
@@ -120,6 +159,7 @@ public class Rdv {
                 }
             }
 
+            Rdv.gets(name, new Rdv(null, date, secSoc, matricule));
             //Doctor.gets(matricule, new Doctor(matricule, specialty, degree, hourlyRate, hospital));
         } catch (IllegalStateException e) {
             System.out.println("erreur création Doctor");
