@@ -1,35 +1,31 @@
 package com.company.users;
 
+import com.company.Main;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Patient extends User {
 
-    private static Map<Integer, Patient> patients = new HashMap<Integer, Patient>();
+    private static final Map<String, Patient> patients = new HashMap<String, Patient>();
 
     private String secSoc;
     private String postalAdress;
     private String phoneNumber;
     private String mailAdress;
 
-    public Patient gets(Integer integer, Patient patient) {
-        if (!patients.containsKey(integer)) {
-            patients.put(integer, patient);
+    public static Patient gets(String string, Patient patient) {
+        if (!patients.containsKey(string)) {
+            System.out.println("New patient added.");
+            patients.put(string, patient);
+        } else {
+            System.out.println("User already exist");
         }
-        return patients.get(integer);
+        return patients.get(string);
     }
-    public Patient() {
-        setName("Bardo");
-        setFirstName("Brigitte");
-        setMailAdress("brigitte@bardo.conne");
-        setPhoneNumber("+33012345678");
-        setPostalAdress("1 Rue de la paie");
-        setSecSoc("11111111111");
-        Patient patient = gets(patients.size(), this);
 
-        System.out.println(patient.getName() + " " + patient.getFirstName());
-        System.out.println(patient.getMailAdress() + " " + patient.getPhoneNumber());
-        System.out.println(patient.getPostalAdress() + " " + patient.getSecSoc());
+    public Patient() {
     }
 
     @Override
@@ -58,7 +54,7 @@ public class Patient extends User {
         return postalAdress;
     }
 
-    public static Map<Integer, Patient> getPatients() {
+    public static Map<String, Patient> getPatients() {
         return patients;
     }
 
@@ -86,5 +82,98 @@ public class Patient extends User {
 
     public void setSecSoc(String secSoc) {
         this.secSoc = secSoc;
+    }
+
+    public static void createNewPatientMenu(String lastName, String firstName) {
+        System.out.println(lastName + " " + firstName);
+
+        Patient patient = new Patient();
+        patient.setName(lastName);
+        patient.setFirstName(firstName);
+
+        Scanner scanner = Main.getScanner();
+
+        try (scanner) {
+            String menu = "===============\n" +
+                    "Enter Mail Adress (UNIQUE) :\n" +
+                    "===============\n";
+
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return;
+                } else if (args[0].contains(".") && args[0].contains("@")){
+                    boolean isNew = true;
+                    for (Patient listedPatient : Patient.getPatients().values()) {
+                        if (listedPatient.getMailAdress().equalsIgnoreCase(args[0])) {
+                            System.out.println("Cette adresse mail est djà utilisée !");
+                            isNew = false;
+                            break;
+                        }
+                    }
+
+                    if (isNew) {
+                        patient.setMailAdress(args[0]);
+                        break;
+                    }
+                }
+            }
+
+            menu = "===============\n" +
+                    "Enter Physical Adress :\n" +
+                    "===============\n";
+
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return;
+                } else if (args.length > 0){
+                    patient.setPostalAdress(command);
+                    break;
+                }
+            }
+
+            menu = "===============\n" +
+                    "Enter Phone Number :\n" +
+                    "===============\n";
+
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return;
+                } else if (args.length > 0){
+                    patient.setPhoneNumber(command);
+                    break;
+                }
+            }
+
+            menu = "===============\n" +
+                    "Enter Social Number :\n" +
+                    "===============\n";
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return;
+                } else if (args.length > 0) {
+                    patient.setSecSoc(command);
+                    break;
+                }
+            }
+
+            Patient.gets(patient.getMailAdress(), patient);
+        }
+
     }
 }
