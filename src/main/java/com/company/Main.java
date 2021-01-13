@@ -1,5 +1,6 @@
 package com.company;
 
+import com.company.rdv.Rdv;
 import com.company.users.Doctor;
 import com.company.users.Patient;
 
@@ -18,6 +19,7 @@ public class Main {
                     "Choose your command :\n" +
                     " > create patient <name> <firstName>: Creates a new patient\n" +
                     " > create doctor <name> <firstName>: Creates a new doctor\n" +
+                    " > create rendezvous : Creates a new rendez-vous\n" +
                     " > exit : leave the program\n" +
                     "===============\n";
 
@@ -31,6 +33,8 @@ public class Main {
                     Patient.createNewPatientMenu(commandArr[2], commandArr[3]);
                 } else if (command.startsWith("create doctor") && commandArr.length > 3) {
                     Doctor.createNewDoctorMenu(commandArr[2], commandArr[3]);
+                } else if (command.startsWith("create rendezvous") && commandArr.length > 1) {
+                    Rdv.createNewDoctorMenu();
                 } else if (command.startsWith("exit")) {
                     return;
                 }

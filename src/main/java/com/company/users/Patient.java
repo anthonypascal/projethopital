@@ -100,6 +100,38 @@ public class Patient extends User {
         //try (scanner) {
         try {
             String menu = "===============\n" +
+                    "Enter Social Number :\n" +
+                    "===============\n";
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return;
+                } else if (args.length > 0) {
+                    try {
+                        int secSocConv = Integer.parseInt(args[0]);
+                        boolean isNew = true;
+                        for (int listedPatient : Patient.getPatients().keySet()) {
+                            if (listedPatient == secSocConv) {
+                                System.out.println("Ce numéro de sécurité sociale est déjà utilisé !");
+                                isNew = false;
+                                break;
+                            }
+                        }
+                        if (isNew) {
+                            secSoc = secSocConv;
+                            break;
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Soucis de format");
+                    }
+
+                }
+            }
+
+            menu = "===============\n" +
                     "Enter Mail Adress (UNIQUE) :\n" +
                     "===============\n";
 
@@ -158,32 +190,6 @@ public class Patient extends User {
                 } else if (args.length > 0){
                     phoneNumber = command;
                     break;
-                }
-            }
-
-            menu = "===============\n" +
-                    "Enter Social Number :\n" +
-                    "===============\n";
-            while (true) {
-                System.out.println(menu);
-                String command = scanner.nextLine();
-                String[] args = command.split(" ");
-
-                if (command.startsWith("exit")) {
-                    return;
-                } else if (args.length > 0) {
-                    boolean isNew = true;
-                    for (int listedPatient : Patient.getPatients().keySet()) {
-                        if (listedPatient == Integer.parseInt(args[0])) {
-                            System.out.println("Ce numéro de sécurité sociale est déjà utilisé !");
-                            isNew = false;
-                            break;
-                        }
-                    }
-                    if (isNew) {
-                        secSoc = Integer.parseInt(args[0]);
-                        break;
-                    }
                 }
             }
 
