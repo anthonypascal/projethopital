@@ -89,4 +89,8 @@ public class Doctor extends User {
     public void setHospital(String hospital) {
         this.hospital = hospital;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1dab1384e1a260a52d7c8c7a62b7725b8519c8e8
