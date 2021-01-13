@@ -8,24 +8,24 @@ import java.util.Scanner;
 
 public class Patient extends User {
 
-    private static final Map<String, Patient> patients = new HashMap<String, Patient>();
+    private static final Map<Integer, Patient> patients = new HashMap<Integer, Patient>();
 
-    private String secSoc;
+    private int secSoc;
     private String postalAdress;
     private String phoneNumber;
     private String mailAdress;
 
-    public static Patient gets(String string, Patient patient) {
-        if (!patients.containsKey(string)) {
+    public static Patient gets(Integer secSoc, Patient patient) {
+        if (!patients.containsKey(secSoc)) {
             System.out.println("New patient added.");
-            patients.put(string, patient);
+            patients.put(secSoc, patient);
         } else {
             System.out.println("User already exist");
         }
-        return patients.get(string);
+        return patients.get(secSoc);
     }
 
-    public Patient(String lastName, String firstName, String secSoc, String postalAdress, String phoneNumber, String mailAdress) {
+    public Patient(String lastName, String firstName, int secSoc, String postalAdress, String phoneNumber, String mailAdress) {
         setName(lastName);
         setFirstName(firstName);
         this.secSoc = secSoc;
@@ -44,7 +44,7 @@ public class Patient extends User {
         return super.getFirstName();
     }
 
-    public String getSecSoc() {
+    public int getSecSoc() {
         return secSoc;
     }
 
@@ -60,7 +60,7 @@ public class Patient extends User {
         return postalAdress;
     }
 
-    public static Map<String, Patient> getPatients() {
+    public static Map<Integer, Patient> getPatients() {
         return patients;
     }
 
@@ -86,7 +86,7 @@ public class Patient extends User {
         this.postalAdress = postalAdress;
     }
 
-    public void setSecSoc(String secSoc) {
+    public void setSecSoc(int secSoc) {
         this.secSoc = secSoc;
     }
 
@@ -97,7 +97,7 @@ public class Patient extends User {
         String mailAdress;
         String postalAdress;
         String phoneNumber;
-        String secSoc;
+        int secSoc;
 
         //try (scanner) {
         try {
@@ -174,12 +174,22 @@ public class Patient extends User {
                 if (command.startsWith("exit")) {
                     return;
                 } else if (args.length > 0) {
-                    secSoc = command;
-                    break;
+                    boolean isNew = true;
+                    for (int listedPatient : Patient.getPatients().keySet()) {
+                        if (listedPatient == Integer.parseInt(args[0])) {
+                            System.out.println("Ce numéro de sécurité sociale est déjà utilisé !");
+                            isNew = false;
+                            break;
+                        }
+                    }
+                    if (isNew) {
+                        secSoc = Integer.parseInt(args[0]);
+                        break;
+                    }
                 }
             }
 
-            Patient patient = Patient.gets(mailAdress, new Patient(lastName, firstName, secSoc, postalAdress, phoneNumber, mailAdress));
+            Patient patient = Patient.gets(secSoc, new Patient(lastName, firstName, secSoc, postalAdress, phoneNumber, mailAdress));
             System.out.println(patient.getName() + " " + patient.getFirstName());
         } catch (IllegalStateException e){
             System.out.println("erreur création Patient");
