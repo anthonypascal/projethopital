@@ -1,17 +1,15 @@
 package com.company.users;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Doctor extends User {
 
     private static final Map<Integer, Doctor> doctors = new HashMap<Integer, Doctor>();
 
     private int matricule;
-    private String specialty;
+    private List<String> specialty;
     private String degree;
-    private String hourlyRate;
+    private int hourlyRate;
     private String hospital;
 
     public static Doctor gets(Integer integer, Doctor doctor) {
@@ -22,7 +20,7 @@ public class Doctor extends User {
         return doctors.get(integer);
     }
 
-    public Doctor(String lastName, String firstName, int matricule, String specialty, String degree, String hourlyRate, String hospital) {
+    public Doctor(String lastName, String firstName, int matricule, List<String> specialty, String degree, int hourlyRate, String hospital) {
         setName(lastName);
         setFirstName(firstName);
         this.matricule = matricule;
@@ -47,7 +45,7 @@ public class Doctor extends User {
         return matricule;
     }
 
-    public String getSpecialty() {
+    public List<String> getSpecialty() {
         return specialty;
     }
 
@@ -55,7 +53,7 @@ public class Doctor extends User {
         return degree;
     }
 
-    public String getHourlyRate() {
+    public int getHourlyRate() {
         return hourlyRate;
     }
 
@@ -78,7 +76,7 @@ public class Doctor extends User {
 
     public void setMatricule(int matricule) { this.matricule = matricule; }
 
-    public void setSpecialty(String specialty) {
+    public void setSpecialty(List<String> specialty) {
         this.specialty = specialty;
     }
 
@@ -86,12 +84,41 @@ public class Doctor extends User {
         this.degree = degree;
     }
 
-    public void setHourlyRate(String hourlyRate) {
+    public void setHourlyRate(int hourlyRate) {
         this.hourlyRate = hourlyRate;
     }
 
     public void setHospital(String hospital) {
         this.hospital = hospital;
+    }
+
+    private static int intMenu(String what) {
+        Scanner scanner = new Scanner(System.in);
+        try {
+
+            String menu = "===============\n" +
+                    "Enter a " + what + " Number :\n" +
+                    "===============\n";
+
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return -1;
+                } else if (args.length > 0) {
+                    try {
+                        return Integer.parseInt(args[0]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("mauvais format de texte");
+                    }
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Illegal argument secsoc menu");
+        }
+        return -1;
     }
 
     private static int matriculeMenu() {
@@ -157,9 +184,9 @@ public class Doctor extends User {
         int matricule;
         String lastName;
         String firstName;
-        String specialty;
+        List<String> specialty;
         String degree;
-        String hourlyRate;
+        int hourlyRate;
         String hospital;
 
         matricule = matriculeMenu();
@@ -177,18 +204,19 @@ public class Doctor extends User {
             return;
         }
 
-        specialty = stringMenu("specialty");
-        if (specialty == null) {
+        String resultSpec = stringMenu("specialty");
+        if (resultSpec == null) {
             return;
         }
+        specialty = Arrays.asList(resultSpec.split(" "));
 
         degree = stringMenu("degree");
         if (degree == null) {
             return;
         }
 
-        hourlyRate = stringMenu("hourly rate");
-        if (hourlyRate == null) {
+        hourlyRate = intMenu("hourly rate");
+        if (hourlyRate == -1) {
             return;
         }
 
@@ -198,5 +226,32 @@ public class Doctor extends User {
         }
 
         Doctor.gets(matricule, new Doctor(lastName, firstName, matricule, specialty, degree, hourlyRate, hospital));
+    }
+
+    public static void display(String matricule) {
+        System.out.println("MATRICULE     | NOM        | PRENOM      | SPECIALITY   | DEGREE     | HOURLY RATE    | HOSPITALS     ");
+        if (matricule != null) {
+            try {
+                if (doctors.containsKey(Integer.parseInt(matricule))) {
+                    Doctor doctor = doctors.get(Integer.parseInt(matricule));
+                    System.out.println(doctor.getMatricule() + " | " + doctor.getName() + " | " + doctor.getFirstName() +
+                            " | " +
+                            doctor.getSpecialty().toString().replaceAll("\\[", "").replaceAll("]", "") +
+                            " | " + doctor.getDegree() + " | " + doctor.getHourlyRate() +
+                            " | " + doctor.getHospital());
+                } else {
+                    System.out.println("Ce docteur n'existe pas");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Mauvaise syntaxe sur l'affichage d'un docteur");
+            }
+        } else {
+            System.out.println("");
+            for (Doctor doctor : getDoctors().values()) {
+                System.out.println(doctor.getMatricule() + " | " + doctor.getName() + " | " + doctor.getFirstName() +
+                        " | " + doctor.getSpecialty().toString() + " | " + doctor.getDegree() + " | " + doctor.getHourlyRate() +
+                        " | " + doctor.getHospital());
+            }
+        }
     }
 }

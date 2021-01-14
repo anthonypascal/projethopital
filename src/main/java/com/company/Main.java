@@ -1,6 +1,5 @@
 package com.company;
 
-import com.company.appointments.Appointment;
 import com.company.reservation.Reservation;
 import com.company.rooms.Room;
 
@@ -43,7 +42,6 @@ public class Main {
                 } else if (command.startsWith("0") || command.startsWith("exit")) {
                     return;
                 }
-
 
                 if (command.startsWith("create reservation")) {
                     Reservation.createNewReservationMenu();

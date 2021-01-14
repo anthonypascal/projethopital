@@ -6,6 +6,7 @@ import com.company.reservation.Reservation;
 import com.company.users.Doctor;
 import com.company.users.Patient;
 
+import javax.print.Doc;
 import java.util.Scanner;
 
 public class Menus {
@@ -51,7 +52,7 @@ public class Menus {
 
         String menu = "===============\n" +
                 "Doctors Menu :\n" +
-                "> 1 - display : Display doctors Menu\n" +
+                "> 1 - display (matricule): Display doctors Menu\n" +
                 "> 2 - create  : Create new doctor\n" +
                 "> 3 - edit    : Edit doctor Menu\n" +
                 "> 4 - delete  : Delete a doctor\n" +
@@ -66,7 +67,11 @@ public class Menus {
                 String[] args = command.split(" ");
 
                 if (command.startsWith("1") || command.startsWith("display")) {
-                    System.out.println("display menu");
+                    if (args.length == 2) {
+                        Doctor.display(args[1]);
+                    } else {
+                        Doctor.display(null);
+                    }
                 } else if (command.startsWith("2") || command.startsWith("create")) {
                     Doctor.createNewDoctorMenu();
                 } else if (command.startsWith("3") || command.startsWith("edit")) {
