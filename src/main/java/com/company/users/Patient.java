@@ -112,22 +112,15 @@ public class Patient extends User {
                 } else if (args.length > 0) {
                     try {
                         int secSocConv = Integer.parseInt(args[0]);
-                        boolean isNew = true;
-                        for (int listedPatient : Patient.getPatients().keySet()) {
-                            if (listedPatient == secSocConv) {
-                                System.out.println("Ce numéro de sécurité sociale est déjà utilisé !");
-                                isNew = false;
-                                break;
-                            }
-                        }
-                        if (isNew) {
+                        if (!Patient.patients.containsKey(secSocConv)) {
                             secSoc = secSocConv;
                             break;
+                        } else {
+                            System.out.println("Ce numéro de sécurité sociale est déjà utilisé !");
                         }
                     } catch (NumberFormatException e) {
-                        System.out.println("Soucis de format");
+                        System.out.println("mauvais format de texte");
                     }
-
                 }
             }
 
@@ -143,19 +136,8 @@ public class Patient extends User {
                 if (command.startsWith("exit")) {
                     return;
                 } else if (args[0].contains(".") && args[0].contains("@")){
-                    boolean isNew = true;
-                    for (Patient listedPatient : Patient.getPatients().values()) {
-                        if (listedPatient.getMailAdress().equalsIgnoreCase(args[0])) {
-                            System.out.println("Cette adresse mail est djà utilisée !");
-                            isNew = false;
-                            break;
-                        }
-                    }
-
-                    if (isNew) {
-                        mailAdress = args[0];
-                        break;
-                    }
+                    mailAdress = args[0];
+                    break;
                 }
             }
 

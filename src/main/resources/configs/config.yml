@@ -1,10 +1,15 @@
 saves:
-    type: database
+    type: "database"
     adress: X.X.X.X
     port: XXXXX
     platform: mysql
     user: root
     password: ""
+
+hospital:
+    floor-number: 5
+    rooms-per-floor: 10
+    base-floor: 0
 
 movement:
     keywords:

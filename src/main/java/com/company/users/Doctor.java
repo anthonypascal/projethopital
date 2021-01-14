@@ -22,8 +22,9 @@ public class Doctor extends User {
         return doctors.get(integer);
     }
 
-    public Doctor(int matricule, String specialty, String degree, String hourlyRate, String hospital) {
-
+    public Doctor(String lastName, String firstName, int matricule, String specialty, String degree, String hourlyRate, String hospital) {
+        setName(lastName);
+        setFirstName(firstName);
         this.matricule = matricule;
         this.specialty = specialty;
         this.degree = degree;
@@ -117,18 +118,17 @@ public class Doctor extends User {
 
                 if (command.startsWith("exit")) {
                     return;
-                } else if (args.length > 0){
-                    boolean isNew = true;
-                    for (int listedMatricule : Doctor.getDoctors().keySet()) {
-                        if (listedMatricule == Integer.parseInt(args[0])) {
-                            System.out.println("Ce matricule de médecin est déjà utilisé !");
-                            isNew = false;
+                } else if (args.length > 0) {
+                    try {
+                        int matriculeConv = Integer.parseInt(args[0]);
+                        if (!Doctor.doctors.containsKey(matriculeConv)) {
+                            matricule = matriculeConv;
                             break;
+                        } else {
+                            System.out.println("Ce matricule de médecin est déjà utilisé !");
                         }
-                    }
-                    if (isNew) {
-                        matricule = Integer.parseInt(args[0]);
-                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("mauvais format de texte");
                     }
                 }
             }
@@ -200,7 +200,7 @@ public class Doctor extends User {
                 }
             }
 
-            Doctor.gets(matricule, new Doctor(matricule, specialty, degree, hourlyRate, hospital));
+            Doctor.gets(matricule, new Doctor(lastName, firstName, matricule, specialty, degree, hourlyRate, hospital));
         } catch (IllegalStateException e){
             System.out.println("erreur création Doctor");
         }
