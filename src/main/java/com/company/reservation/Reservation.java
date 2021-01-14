@@ -1,9 +1,9 @@
 package com.company.reservation;
 
-import com.company.rdv.Rdv;
 import com.company.rooms.Room;
 import com.company.users.Doctor;
 import com.company.users.Patient;
+import com.company.users.User;
 
 import javax.print.Doc;
 import java.text.ParseException;
@@ -40,6 +40,151 @@ public class Reservation {
         this.matricule = matricule;
     }
 
+    private static int intMenu(String what) {
+        Scanner scanner = new Scanner(System.in);
+        try {
+
+            String menu = "===============\n" +
+                    "Enter a " + what + " Number :\n" +
+                    "===============\n";
+
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return -1;
+                } else if (args.length > 0) {
+                    try {
+                        int matriculeConv = Integer.parseInt(args[0]);
+                        if (!reservations.containsKey(matriculeConv)) {
+                            return matriculeConv;
+                        } else {
+                            System.out.println("Ce numéro est déjà utilisé !");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("mauvais format de texte");
+                    }
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Illegal argument secsoc menu");
+        }
+        return -1;
+    }
+
+    private static Date dateMenu() {
+        String menu = "===============\n" +
+                "Enter Date :\n" +
+                "Format : dd/MM/yyyy HH:mm\n" +
+                "===============\n";
+
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return null;
+                } else if (args.length == 2) {
+                    try {
+                        return new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(command);
+                    } catch (ParseException parseException) {
+                        System.out.println("Mauvais format de date");
+                    }
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erreur dans le dateMenu");
+        }
+        return null;
+    }
+
+    private static String stringMenu(String what) {
+        Scanner scanner = new Scanner(System.in);
+
+        String instruction = "===============\n" +
+                "Enter " + what + " :\n" +
+                "===============\n";
+
+        try {
+            while (true) {
+                System.out.println(instruction);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return null;
+                } else if (args.length > 0) {
+                    return command;
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Illegal argument string menu");
+        }
+        return null;
+    }
+
+    private static int userID(Class user) {
+        int userID;
+        if (user == Patient.class) {
+            while (true) {
+                userID = intMenu("patient Social Security number");
+                if (userID == -1) {
+                    return -1;
+                } else if (Patient.getPatients().containsKey(userID)) {
+                    return userID;
+                } else {
+                    System.out.println("Le numéro de sécurité sociale n'est pas correct. Réessayez");
+                }
+            }
+        } else if (user == Doctor.class) {
+            while (true) {
+                userID = intMenu("doctor matricule");
+                if (userID == -1) {
+                    return -1;
+                } else if (Doctor.getDoctors().containsKey(userID)) {
+                    return userID;
+                } else {
+                    System.out.println("Le matricule n'est pas correct. Réessayez");
+                }
+            }
+        }
+        return -1;
+    }
+
+    private static boolean userName(Class user, int value) {
+        String userName;
+        if (user == Patient.class) {
+            while (true) {
+                userName = stringMenu("patient last name");
+                if (userName == null) {
+                    return false;
+                } else if (Patient.getPatients().get(value).getName().equalsIgnoreCase(userName)) {
+                    return true;
+                } else {
+                    System.out.println("Le nom de famille n'est pas correct. Réessayez");
+                }
+            }
+        } else if (user == Doctor.class) {
+            while (true) {
+                userName = stringMenu("doctor last name");
+                if (userName == null) {
+                    return false;
+                } else if (Doctor.getDoctors().get(value).getName().equalsIgnoreCase(userName)) {
+                    return true;
+                } else {
+                    System.out.println("Le nom de famille n'est pas correct. Réessayez");
+                }
+            }
+        }
+        return false;
+    }
+
     public static void createNewReservationMenu() {
         int matricule;
         int secSoc;
@@ -47,151 +192,115 @@ public class Reservation {
         int duration;
         int room;
 
+        secSoc = userID(Patient.class);
+        if (secSoc == -1) {
+            return;
+        }
+        if (!userName(Patient.class, secSoc)) {
+            return;
+        }
+        matricule = userID(Doctor.class);
+        if (matricule == -1) {
+            return;
+        }
+        if (!userName(Doctor.class, matricule)) {
+            return;
+        }
+        room = intMenu("room");
+        if (room == -1) {
+            return;
+        }
 
+        duration = intMenu("duration (in days)");
+        if (duration == -1) {
+            return;
+        }
+
+        date = dateMenu();
+        if (date == null) {
+            return;
+        }
+        Reservation.gets(room, new Reservation(room, date, duration, secSoc, matricule));
+    }
+
+    public static void removeReservation() {
         Scanner scanner = new Scanner(System.in);
+        String menu = "======================\n" +
+                "Enter Room ID\n" +
+                "======================";
 
-        try {
-            String menu = "===============\n" +
-                    "Enter the patient name and security number :\n" +
-                    "===============\n";
 
-            while (true) {
-                System.out.println(menu);
-                String command = scanner.nextLine();
-                String[] args = command.split(" ");
+        while (true) {
+            System.out.println(menu);
+            String command = scanner.nextLine();
+            String[] args = command.split(" ");
 
-                if (command.startsWith("exit")) {
-                    return;
-                } else if (args.length == 2){
-                    try {
-                        Map<Integer, Patient> patients = Patient.getPatients();
-                        int numero = Integer.parseInt(args[1]);
-                        if (patients.containsKey(numero)) {
-                            if (patients.get(numero).getName().equalsIgnoreCase(args[0])) {
-                                secSoc = numero;
-                                break;
-                            } else {
-                                System.out.println("Ce nom n'existe pas");
-                            }
+            if (command.startsWith("exit")) {
+                return;
+            } else if (args.length == 1) {
+                try {
+                    int value = Integer.parseInt(args[0]);
+
+                    if (Room.getRooms().containsKey(value)) {
+                        if (reservations.containsKey(value)) {
+                            System.out.println("Réservation supprimée");
+                            reservations.remove(value);
+                            Room.getRooms().replace(value, true);
+                            break;
                         } else {
-                            System.out.println("Ce numéro de sécurité sociale n'existe pas");
+                            System.out.println("Cette Room n'est pas réservée");
                         }
-                    } catch (NumberFormatException e) {
-                        System.out.println("Mauvaise syntaxe du numéro de sécurité sociale");
+                    } else {
+                        System.out.println("Cette chambre n'existe pas");
                     }
+                } catch (NumberFormatException e) {
+                    System.out.println("Mauvaise syntaxe de numéro de Room");
                 }
             }
-
-            menu = "===============\n" +
-                    "Enter a Doctor name and Matricule :\n" +
-                    "===============\n";
-
-            while (true) {
-                System.out.println(menu);
-                String command = scanner.nextLine();
-                String[] args = command.split(" ");
-
-                if (command.startsWith("exit")) {
-                    return;
-                } else if (args.length == 2){
-                    try {
-                        Map<Integer, Doctor> doctors = Doctor.getDoctors();
-                        int numero = Integer.parseInt(args[1]);
-                        if (doctors.containsKey(numero)) {
-                            if (doctors.get(numero).getName().equalsIgnoreCase(args[0])) {
-                                matricule = numero;
-                                break;
-                            } else {
-                                System.out.println("Ce nom n'existe pas");
-                            }
-                        } else {
-                            System.out.println("Ce numéro de matricule n'existe pas");
-                        }
-                    } catch (NumberFormatException e) {
-                        System.out.println("Mauvaise syntaxe du numéro de matricule");
-                    }
-                }
-            }
-
-            menu = "===============\n" +
-                    "Enter a Room number :\n" +
-                    "===============\n";
-
-            while (true) {
-                System.out.println(menu);
-                String command = scanner.nextLine();
-                String[] args = command.split(" ");
-
-                if (command.startsWith("exit")) {
-                    return;
-                } else {
-                    try {
-                        int roomConv = Integer.parseInt(args[0]);
-                        if (Room.rooms.containsKey(roomConv)) {
-                            if (Room.rooms.get(roomConv).equals(false)) {
-                                room = roomConv;
-                                Room.rooms.replace(room, true);
-                                break;
-                            } else {
-                                System.out.println("Cette salle est déjà occupée");
-                            }
-                        } else {
-                            System.out.println("Cette salle n'existe pas.");
-                        }
-                    } catch (NumberFormatException e) {
-                        System.out.println("Soucis de format");
-                    }
-                }
-            }
-
-            menu = "===============\n" +
-                    "Enter Date :\n" +
-                    "Format : dd/MM/yyyy HH:mm\n" +
-                    "===============\n";
-
-            while (true) {
-                System.out.println(menu);
-                String command = scanner.nextLine();
-                String[] args = command.split(" ");
-
-                if (command.startsWith("exit")) {
-                    return;
-                } else if (args.length == 2){
-                    try {
-                        date = new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(command);
-                        break;
-                    } catch (ParseException parseException) {
-                        System.out.println("Mauvais format de date");
-                    }
-                }
-            }
-
-            menu = "===============\n" +
-                    "Enter durée :\n" +
-                    "===============\n";
-
-            while (true) {
-                System.out.println(menu);
-                String command = scanner.nextLine();
-                String[] args = command.split(" ");
-
-                if (command.startsWith("exit")) {
-                    return;
-                } else if (args.length == 1){
-                    try {
-                        duration = Integer.parseInt(args[0]);
-                        break;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Mauvais format de durée");
-                    }
-                }
-            }
-
-            Reservation.gets(room, new Reservation(room, date, duration, secSoc, matricule));
-            //Doctor.gets(matricule, new Doctor(matricule, specialty, degree, hourlyRate, hospital));
-        } catch (IllegalStateException e) {
-            System.out.println("erreur création Doctor");
         }
     }
 
+    public static Map<Integer, Reservation> getReservations() {
+        return reservations;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public int getMatricule() {
+        return matricule;
+    }
+
+    public int getRoom() {
+        return room;
+    }
+
+    public int getSecSoc() {
+        return secSoc;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void setMatricule(int matricule) {
+        this.matricule = matricule;
+    }
+
+    public void setRoom(int room) {
+        this.room = room;
+    }
+
+    public void setSecSoc(int secSoc) {
+        this.secSoc = secSoc;
+    }
 }

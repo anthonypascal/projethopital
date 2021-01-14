@@ -1,10 +1,8 @@
 package com.company;
 
-import com.company.rdv.Rdv;
+import com.company.appointments.Appointment;
 import com.company.reservation.Reservation;
 import com.company.rooms.Room;
-import com.company.users.Doctor;
-import com.company.users.Patient;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -16,17 +14,17 @@ public class Main {
         initConfig();
         Room.initRooms();
 
-        try {
+        String menu = "===============\n" +
+                "Choose your command :\n" +
+                " > 1 - patient     : Patients menu\n" +
+                " > 2 - doctor      : Doctors menu\n" +
+                " > 3 - appointment : Appointments menu\n" +
+                " > 4 - reservation : Reservations menu and bills\n" +
+                "" +
+                " > 0 - exit        : leave the program\n" +
+                "===============\n";
 
-            String menu = "===============\n" +
-                    "Choose your command :\n" +
-                    " > create patient <name> <firstName>: Creates a new patient\n" +
-                    " > create doctor <name> <firstName>: Creates a new doctor\n" +
-                    " > create rendezvous : Creates a new rendez-vous\n" +
-                    " > create reservation : Creates a new reservation\n" +
-                    " > remove rendezvous : remove an existing rendez-vous\n" +
-                    " > exit : leave the program\n" +
-                    "===============\n";
+        try {
 
             while( true ) {
                 System.out.println(menu);
@@ -34,18 +32,21 @@ public class Main {
                 System.out.println(command);
                 String[] commandArr = command.split(" ");
 
-                if (command.startsWith("create patient") && commandArr.length > 3) {
-                    Patient.createNewPatientMenu(commandArr[2], commandArr[3]);
-                } else if (command.startsWith("create doctor") && commandArr.length > 3) {
-                    Doctor.createNewDoctorMenu(commandArr[2], commandArr[3]);
-                } else if (command.startsWith("create rendezvous")) {
-                    Rdv.createNewRdvMenu();
-                } else if (command.startsWith("create reservation")) {
-                    Reservation.createNewReservationMenu();
-                } else if (command.startsWith("remove rendezvous")) {
-                    Rdv.removeRdv();
-                }else if (command.startsWith("exit")) {
+                if (command.startsWith("1") || command.startsWith("patient")) {
+                    Menus.mainPatientMenu();
+                } else if (command.startsWith("2") || command.startsWith("doctor")) {
+                    Menus.mainDoctorMenu();
+                } else if (command.startsWith("3") || command.startsWith("appointment")) {
+                    Menus.appointmentMenu();
+                } else if (command.startsWith("4") || command.startsWith("reservation")) {
+                    Menus.reservationMenu();
+                } else if (command.startsWith("0") || command.startsWith("exit")) {
                     return;
+                }
+
+
+                if (command.startsWith("create reservation")) {
+                    Reservation.createNewReservationMenu();
                 }
             }
 

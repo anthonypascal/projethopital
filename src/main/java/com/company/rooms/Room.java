@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Room {
-    public static Map<Integer, Boolean> rooms = new HashMap<>();
+    private static Map<Integer, Boolean> rooms = new HashMap<>();
 
     public static void initRooms() {
 
@@ -23,7 +23,6 @@ public class Room {
         int floor = 5; //LIRE CONFIG.YML
         int floorRoom = 12; //LIRE CONFIG.YML
         int baseFloor = 0; //LIRE CONFIG.YML
-        int price = 50; //LIRE CONFIG
 
         for (int i = baseFloor; i <= floor; i++) {
             for (int j = 1; j <= floorRoom; j++) {
@@ -35,4 +34,7 @@ public class Room {
         }
     }
 
+    public static Map<Integer, Boolean> getRooms() {
+        return rooms;
+    }
 }

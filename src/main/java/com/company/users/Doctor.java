@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Doctor extends User {
 
-    private static Map<Integer, Doctor> doctors = new HashMap<Integer, Doctor>();
+    private static final Map<Integer, Doctor> doctors = new HashMap<Integer, Doctor>();
 
     private int matricule;
     private String specialty;
@@ -94,17 +94,8 @@ public class Doctor extends User {
         this.hospital = hospital;
     }
 
-    public static void createNewDoctorMenu(String lastName, String firstName) {
-        System.out.println(lastName + " " + firstName);
-
-        int matricule;
-        String specialty;
-        String degree;
-        String hourlyRate;
-        String hospital;
-
+    private static int matriculeMenu() {
         Scanner scanner = new Scanner(System.in);
-
         try {
 
             String menu = "===============\n" +
@@ -117,13 +108,12 @@ public class Doctor extends User {
                 String[] args = command.split(" ");
 
                 if (command.startsWith("exit")) {
-                    return;
+                    return -1;
                 } else if (args.length > 0) {
                     try {
                         int matriculeConv = Integer.parseInt(args[0]);
                         if (!Doctor.doctors.containsKey(matriculeConv)) {
-                            matricule = matriculeConv;
-                            break;
+                            return matriculeConv;
                         } else {
                             System.out.println("Ce matricule de médecin est déjà utilisé !");
                         }
@@ -132,78 +122,81 @@ public class Doctor extends User {
                     }
                 }
             }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Illegal argument matricule menu");
+        }
+        return -1;
+    }
 
-            menu = "===============\n" +
-                    "Enter specialty :\n" +
-                    "===============\n";
+    private static String stringMenu(String what) {
+        Scanner scanner = new Scanner(System.in);
 
+        String instruction = "===============\n" +
+                "Enter " + what + " :\n" +
+                "===============\n";
+
+        try {
             while (true) {
-                System.out.println(menu);
+                System.out.println(instruction);
                 String command = scanner.nextLine();
                 String[] args = command.split(" ");
 
                 if (command.startsWith("exit")) {
-                    return;
-                } else {
-                    specialty = args[0];
-                    break;
-                }
-            }
-
-            menu = "===============\n" +
-                    "Enter degree :\n" +
-                    "===============\n";
-
-            while (true) {
-                System.out.println(menu);
-                String command = scanner.nextLine();
-                String[] args = command.split(" ");
-
-                if (command.startsWith("exit")) {
-                    return;
-                } else if (args.length > 0){
-                    degree = command;
-                    break;
-                }
-            }
-
-            menu = "===============\n" +
-                    "Enter Hourly Rate :\n" +
-                    "===============\n";
-
-            while (true) {
-                System.out.println(menu);
-                String command = scanner.nextLine();
-                String[] args = command.split(" ");
-
-                if (command.startsWith("exit")) {
-                    return;
-                } else if (args.length > 0){
-                    hourlyRate = command;
-                    break;
-                }
-            }
-
-            menu = "===============\n" +
-                    "Enter Hospital :\n" +
-                    "===============\n";
-            while (true) {
-                System.out.println(menu);
-                String command = scanner.nextLine();
-                String[] args = command.split(" ");
-
-                if (command.startsWith("exit")) {
-                    return;
+                    return null;
                 } else if (args.length > 0) {
-                    hospital = command;
-                    break;
+                    return command;
                 }
             }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Illegal argument string menu");
+        }
+        return null;
+    }
 
-            Doctor.gets(matricule, new Doctor(lastName, firstName, matricule, specialty, degree, hourlyRate, hospital));
-        } catch (IllegalStateException e){
-            System.out.println("erreur création Doctor");
+    public static void createNewDoctorMenu() {
+        int matricule;
+        String lastName;
+        String firstName;
+        String specialty;
+        String degree;
+        String hourlyRate;
+        String hospital;
+
+        matricule = matriculeMenu();
+        if (matricule == -1) {
+            return;
         }
 
+        lastName = stringMenu("last name");
+        if (lastName == null) {
+            return;
+        }
+
+        firstName = stringMenu("first name");
+        if (firstName == null) {
+            return;
+        }
+
+        specialty = stringMenu("specialty");
+        if (specialty == null) {
+            return;
+        }
+
+        degree = stringMenu("degree");
+        if (degree == null) {
+            return;
+        }
+
+        hourlyRate = stringMenu("hourly rate");
+        if (hourlyRate == null) {
+            return;
+        }
+
+        hospital = stringMenu("hospital name");
+        if (hospital == null) {
+            return;
+        }
+
+        Doctor.gets(matricule, new Doctor(lastName, firstName, matricule, specialty, degree, hourlyRate, hospital));
     }
 }
