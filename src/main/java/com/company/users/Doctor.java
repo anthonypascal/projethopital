@@ -291,4 +291,83 @@ public class Doctor extends User {
             System.out.println("Error while creating appointment");
         }
     }
+
+    public static void editDoctor(String oldMatricule) {
+        Doctor doctor;
+        try {
+            int testMatricule = Integer.parseInt(oldMatricule);
+            if (getDoctors().containsKey(testMatricule)) {
+                doctor = getDoctors().get(testMatricule);
+            } else {
+                System.out.println("Ce docteur n'existe pas");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Soucis de format edit doctor");
+            return;
+        }
+
+        String menu = "===============\n" +
+                "1 - matricule : change matricule of the doctor" +
+                "2 - specialty : change specialty of the doctor\n" +
+                "3 - degree : change degree of the doctor\n" +
+                "4 - hourlyRate : change hourly of the doctor\n" +
+                "5 - hospital : change hospital\n" +
+                "0 - exit : back to the previous menu\n" +
+                "===============\n";
+        Scanner scanner = new Scanner(System.in);
+        try {
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("1") || command.startsWith("matricule")) {
+                    int matricule = matriculeMenu();
+                    if (matricule == -1) {
+                        System.out.println("Annulation");
+                    } else {
+                        doctor.setMatricule(matricule);
+                        System.out.println("edited matricule");
+                    }
+                } else if (command.startsWith("2") || command.startsWith("specialty")) {
+                    String specialty = stringMenu("specialty");
+                    if (specialty != null) {
+                        doctor.setSpecialty(Arrays.asList(specialty.split(" ")));
+                        System.out.println("edited specialty");
+                    } else {
+                        System.out.println("Annulation");
+                    }
+                } else if (command.startsWith("3") || command.startsWith("degree")) {
+                    String degree = stringMenu("degree");
+                    if (degree != null) {
+                        doctor.setDegree(degree);
+                        System.out.println("edited degree");
+                    } else {
+                        System.out.println("Annulation");
+                    }
+                } else if (command.startsWith("4") || command.startsWith("hourlyRate")) {
+                    int hourlyRate = intMenu( "hourlyRate");
+                    if (hourlyRate != -1) {
+                        doctor.setHourlyRate(hourlyRate);
+                        System.out.println("edited hourlyRate");
+                    } else {
+                        System.out.println("Annulation");
+                    }
+                } else if (command.startsWith("5") || command.startsWith("hospital")) {
+                    String hospital = stringMenu("hospital");
+                    if (hospital != null) {
+                        doctor.setHospital(hospital);
+                        System.out.println("hospital edited");
+                    } else {
+                        System.out.println("Annulation");
+                    }
+                } else if (command.startsWith("0") || command.startsWith("exit")) {
+                    return;
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Illegal argument edit patient menu");
+        }
+    }
 }
