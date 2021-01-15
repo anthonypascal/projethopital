@@ -254,4 +254,41 @@ public class Doctor extends User {
             }
         }
     }
+
+    public static void removeDoctor() {
+
+        Scanner scanner = new Scanner(System.in);
+        try {
+            String menu = "===============\n" +
+                    "Enter the Doctor matricule to delete :\n" +
+                    "===============\n";
+
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return;
+                } else if (args.length == 1){
+                    try {
+                        int matricule = Integer.parseInt(args[0]);
+                        if (doctors.containsKey(matricule)) {
+                            doctors.remove(matricule);
+                            System.out.println("Deleted doctor");
+                            break;
+                        } else {
+                            System.out.println("The specified doctor doesn't exist");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Delete doctor NumberFormatExeption");
+                    }
+
+                }
+            }
+
+        } catch (IllegalStateException e){
+            System.out.println("Error while creating appointment");
+        }
+    }
 }

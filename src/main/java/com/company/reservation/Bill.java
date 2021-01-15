@@ -10,9 +10,12 @@ public class Bill {
                 Reservation reservation = Reservation.getReservations().get(value);
                 int days = reservation.getDuration();
                 int addition = days * 55;
-                System.out.println("Facture au nom de " + Patient.getPatients().get(reservation.getSecSoc()));
+                Patient patient = Patient.getPatients().get(reservation.getSecSoc());
+                System.out.println("Facture au nom de " + patient.getName() + " " + patient.getFirstName());
                 System.out.println("Le nombre de jours est de " + days);
-                System.out.println("Le coût est de "+addition+"€.");
+                System.out.println("Le coût est de " + addition + "€.");
+            } else {
+                System.out.println("Il n'y a aucune réservation actuellement avec cette chambre");
             }
 
         } catch (NumberFormatException e){

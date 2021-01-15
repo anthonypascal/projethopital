@@ -7,17 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Room {
-    private static Map<Integer, Boolean> rooms = new HashMap<>();
+    private static final Map<Integer, Boolean> rooms = new HashMap<>();
 
     public static void initRooms() {
-
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
-
-        /*Yaml yaml = new Yaml();
-        InputStream inputStream = Room.class.getClassLoader().getResourceAsStream("configs/config.yml");
-
-        Map<String, Object> content = yaml.load(inputStream);
-        String imgName = config.getString("saves.type");*/
 
         //System.out.println(imgName);
         int floor = 5; //LIRE CONFIG.YML

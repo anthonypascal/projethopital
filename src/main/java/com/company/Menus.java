@@ -30,13 +30,21 @@ public class Menus {
                 String[] args = command.split(" ");
 
                 if (command.startsWith("1") || command.startsWith("display")) {
-                    System.out.println("display menu");
+                    if (args.length == 2) {
+                        Patient.display(args[0]);
+                    } else {
+                        Patient.display(null);
+                    }
                 } else if (command.startsWith("2") || command.startsWith("create")) {
                     Patient.createNewPatientMenu();
                 } else if (command.startsWith("3") || command.startsWith("edit")) {
-                    System.out.println("edit menu");
+                    if (args.length == 2) {
+                        Patient.editPatient(args[1]);
+                    } else {
+                        System.out.println("too few arguments");
+                    }
                 } else if (command.startsWith("4") || command.startsWith("delete")) {
-                    System.out.println("delete menu");
+                    Patient.removePatient();
                 } else if (command.startsWith("0") || command.startsWith("exit")) {
                     return;
                 }
@@ -77,7 +85,7 @@ public class Menus {
                 } else if (command.startsWith("3") || command.startsWith("edit")) {
                     System.out.println("edit menu");
                 } else if (command.startsWith("4") || command.startsWith("delete")) {
-                    System.out.println("delete menu");
+                    Doctor.removeDoctor();
                 } else if (command.startsWith("0") || command.startsWith("exit")) {
                     return;
                 }

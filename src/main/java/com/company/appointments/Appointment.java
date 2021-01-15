@@ -14,6 +14,7 @@ import java.util.Scanner;
 public class Appointment {
 
     private static final Map<String, Appointment> appointments = new HashMap<>();
+    private static final Map<String, AppointmentObject> appointmentsObject = new HashMap<>();
 
     private String name;
     private String place;
@@ -191,6 +192,7 @@ public class Appointment {
         }
 
         Appointment.gets(name, new Appointment(name, place, date, secSoc, matricule));
+        appointmentsObject.put(name, new AppointmentObject(name, place, date, secSoc, matricule));
     }
 
     public static void removeAppointment() {

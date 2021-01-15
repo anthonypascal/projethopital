@@ -15,6 +15,7 @@ import java.util.Scanner;
 
 public class Reservation {
     private static final Map<Integer, Reservation> reservations = new HashMap<>();
+    private static final Map<Integer, ReservationObject> reservationsObject = new HashMap<>();
     private int room;
     private Date date;
     private int duration;
@@ -221,6 +222,7 @@ public class Reservation {
             return;
         }
         Reservation.gets(room, new Reservation(room, date, duration, secSoc, matricule));
+        reservationsObject.put(room, new ReservationObject(room, date, duration, secSoc, matricule));
     }
 
     public static void removeReservation() {
