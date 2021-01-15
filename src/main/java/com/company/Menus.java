@@ -6,7 +6,6 @@ import com.company.reservation.Reservation;
 import com.company.users.Doctor;
 import com.company.users.Patient;
 
-import javax.print.Doc;
 import java.util.Scanner;
 
 public class Menus {
@@ -15,12 +14,12 @@ public class Menus {
 
         String menu = "===============\n" +
                 "Patients Menu :\n" +
-                "> 1 - display : Display patients Menu\n" +
-                "> 2 - create  : Create new patient\n" +
-                "> 3 - edit    : Edit patient Menu\n" +
-                "> 4 - delete  : Delete a patient\n" +
+                "> 1 - display        : Display patients Menu\n" +
+                "> 2 - create         : Create new patient\n" +
+                "> 3 - edit <sec soc> : Edit patient Menu\n" +
+                "> 4 - delete         : Delete a patient\n" +
                 "" +
-                "> 0 - exit    : Back to main Menu\n" +
+                "> 0 - exit           : Back to main Menu\n" +
                 "===============\n";
 
         try {
@@ -54,7 +53,6 @@ public class Menus {
         }
     }
 
-
     public static void mainDoctorMenu() {
         Scanner scanner = new Scanner(System.in);
 
@@ -62,7 +60,7 @@ public class Menus {
                 "Doctors Menu :\n" +
                 "> 1 - display (matricule): Display doctors Menu\n" +
                 "> 2 - create  : Create new doctor\n" +
-                "> 3 - edit    : Edit doctor Menu\n" +
+                "> 3 - edit <matricule>   : Edit doctor Menu\n" +
                 "> 4 - delete  : Delete a doctor\n" +
                 "" +
                 "> 0 - exit    : Back to main Menu\n" +
@@ -83,7 +81,11 @@ public class Menus {
                 } else if (command.startsWith("2") || command.startsWith("create")) {
                     Doctor.createNewDoctorMenu();
                 } else if (command.startsWith("3") || command.startsWith("edit")) {
-                    System.out.println("edit menu");
+                    if (args.length == 2) {
+                        Doctor.editDoctor(args[1]);
+                    } else {
+                        System.out.println("Too few arguments");
+                    }
                 } else if (command.startsWith("4") || command.startsWith("delete")) {
                     Doctor.removeDoctor();
                 } else if (command.startsWith("0") || command.startsWith("exit")) {
@@ -115,11 +117,19 @@ public class Menus {
                 String[] args = command.split(" ");
 
                 if (command.startsWith("1") || command.startsWith("display")) {
-                    System.out.println("display menu");
+                    if (args.length == 2) {
+                        Appointment.display(args[1]);
+                    } else {
+                        Appointment.display(null);
+                    }
                 } else if (command.startsWith("2") || command.startsWith("create")) {
                     Appointment.createNewAppointmentMenu();
                 } else if (command.startsWith("3") || command.startsWith("edit")) {
-                    System.out.println("edit menu");
+                    if (args.length == 2) {
+                        Appointment.editAppointment(args[1]);
+                    } else {
+                        System.out.println("Too few arguments");
+                    }
                 } else if (command.startsWith("4") || command.startsWith("delete")) {
                     Appointment.removeAppointment();
                 } else if (command.startsWith("0") || command.startsWith("exit")) {
@@ -136,13 +146,13 @@ public class Menus {
 
         String menu = "===============\n" +
                 "Reservations Menu :\n" +
-                "> 1 - display              : Display reservation Menu\n" +
-                "> 2 - create               : Create new reservation\n" +
-                "> 3 - edit                 : Edit reservation Menu\n" +
-                "> 4 - delete               : cancel an reservation\n" +
-                "> 5 - bill <room number>   : Generate a reservation bill\n" +
+                "> 1 - display (room number) : Display reservation Menu\n" +
+                "> 2 - create                : Create new reservation\n" +
+                "> 3 - edit <room number>    : Edit reservation Menu\n" +
+                "> 4 - delete                : cancel an reservation\n" +
+                "> 5 - bill <room number>    : Generate a reservation bill\n" +
                 "" +
-                "> 0 - exit                 : Back to main Menu\n" +
+                "> 0 - exit                  : Back to main Menu\n" +
                 "===============\n";
 
         try {
@@ -152,15 +162,27 @@ public class Menus {
                 String[] args = command.split(" ");
 
                 if (command.startsWith("1") || command.startsWith("display")) {
-                    System.out.println("display menu");
+                    if (args.length == 2) {
+                        Reservation.display(args[1]);
+                    } else {
+                        Reservation.display(null);
+                    }
                 } else if (command.startsWith("2") || command.startsWith("create")) {
                     Reservation.createNewReservationMenu();
                 } else if (command.startsWith("3") || command.startsWith("edit")) {
-                    System.out.println("edit menu");
+                    if (args.length == 2) {
+                        Reservation.editReservation(args[1]);
+                    } else {
+                        System.out.println("Too few arguments");
+                    }
                 } else if (command.startsWith("4") || command.startsWith("delete")) {
                     Reservation.removeReservation();
-                } else if ((command.startsWith("5") || command.startsWith("bill")) && args.length == 2) {
-                    Bill.getCost(args[1]);
+                } else if ((command.startsWith("5") || command.startsWith("bill"))) {
+                    if (args.length == 2) {
+                        Bill.getCost(args[1]);
+                    } else {
+                        System.out.println("Too few arguments");
+                    }
                 } else if (command.startsWith("0") || command.startsWith("exit")) {
                     return;
                 }

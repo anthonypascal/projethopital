@@ -1,16 +1,17 @@
 package com.company.reservation;
 
 import com.company.users.Patient;
+import com.company.users.usersobjects.PatientObject;
 
 public class Bill {
     public static void getCost(String string) {
         try {
             int value = Integer.parseInt(string);
             if (Reservation.getReservations().containsKey(value)) {
-                Reservation reservation = Reservation.getReservations().get(value);
+                ReservationObject reservation = Reservation.getReservations().get(value);
                 int days = reservation.getDuration();
                 int addition = days * 55;
-                Patient patient = Patient.getPatients().get(reservation.getSecSoc());
+                PatientObject patient = Patient.getPatients().get(reservation.getSecSoc());
                 System.out.println("Facture au nom de " + patient.getName() + " " + patient.getFirstName());
                 System.out.println("Le nombre de jours est de " + days);
                 System.out.println("Le coût est de " + addition + "€.");

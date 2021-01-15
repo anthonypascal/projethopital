@@ -2,6 +2,8 @@ package com.company.appointments;
 
 import com.company.users.Doctor;
 import com.company.users.Patient;
+import com.company.users.usersobjects.DoctorObject;
+import com.company.users.usersobjects.PatientObject;
 
 import javax.print.Doc;
 import java.text.ParseException;
@@ -13,32 +15,20 @@ import java.util.Scanner;
 
 public class Appointment {
 
-    private static final Map<String, Appointment> appointments = new HashMap<>();
     private static final Map<String, AppointmentObject> appointmentsObject = new HashMap<>();
 
-    private String name;
-    private String place;
-    private Date date;
-    private int secSoc;
-    private int matricule;
-
-
-    public static Appointment gets(String name, Appointment appointment) {
-        if (!appointments.containsKey(name)) {
+    public static AppointmentObject gets(String name, AppointmentObject appointment) {
+        if (!appointmentsObject.containsKey(name)) {
             System.out.println("New rdv added.");
-            appointments.put(name, appointment);
+            appointmentsObject.put(name, appointment);
         } else {
             System.out.println("Rdv already exist");
         }
-        return appointments.get(name);
+        return appointmentsObject.get(name);
     }
 
-    public Appointment(String name, String place, Date date, int secSoc, int matricule) {
-        this.name = name;
-        this.place = place;
-        this.date = date;
-        this.secSoc = secSoc;
-        this.matricule = matricule;
+    public static Map<String, AppointmentObject> getAppointments() {
+        return appointmentsObject;
     }
 
     private static Date dateMenu() {
@@ -164,7 +154,7 @@ public class Appointment {
             name = stringMenu("appointment name");
             if (name == null) {
                 return;
-            } else if (!appointments.containsKey(name)) {
+            } else if (!appointmentsObject.containsKey(name)) {
                 break;
             } else {
                 System.out.println("ce nom de rendez-vous existe déjà");
@@ -191,7 +181,7 @@ public class Appointment {
             return;
         }
 
-        Appointment.gets(name, new Appointment(name, place, date, secSoc, matricule));
+        Appointment.gets(name, new AppointmentObject(name, place, date, secSoc, matricule));
         appointmentsObject.put(name, new AppointmentObject(name, place, date, secSoc, matricule));
     }
 
@@ -211,8 +201,8 @@ public class Appointment {
                 if (command.startsWith("exit")) {
                     return;
                 } else if (args.length == 1){
-                    if (appointments.containsKey(command)) {
-                        appointments.remove(command);
+                    if (appointmentsObject.containsKey(command)) {
+                        appointmentsObject.remove(command);
                         System.out.println("Deleted appointment");
                         break;
                     } else {
@@ -227,28 +217,169 @@ public class Appointment {
         }
     }
 
-    public int getSecSoc() {
-        return secSoc;
+    public static void display(String matricule) {
+        System.out.println("NAME     | PLACE        | DATE      | SEC SOC   | MATRICULE   |");
+        if (matricule != null) {
+            if (appointmentsObject.containsKey(matricule)) {
+                AppointmentObject appointment = appointmentsObject.get(matricule);
+                System.out.println(appointment.getName() + " | " + appointment.getPlace() +
+                        " | " + appointment.getDate() + " | " + appointment.getSecSoc() +
+                        " | " + appointment.getMatricule());
+            } else {
+                System.out.println("Ce rendez-vous n'existe pas");
+            }
+        } else {
+            System.out.println("");
+            for (AppointmentObject appointment : appointmentsObject.values()) {
+                System.out.println(appointment.getName() + " | " + appointment.getPlace() +
+                        " | " + appointment.getDate() + " | " + appointment.getSecSoc() +
+                        " | " + appointment.getMatricule());
+            }
+        }
     }
 
-    public int getMatricule() {
-        return matricule;
+    private static int matriculeMenu() {
+        Scanner scanner = new Scanner(System.in);
+        try {
+
+            String menu = "===============\n" +
+                    "Enter an identification number :\n" +
+                    "===============\n";
+
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return -1;
+                } else if (args.length > 0) {
+                    try {
+                        int matriculeConv = Integer.parseInt(args[0]);
+                        if (Doctor.getDoctors().containsKey(matriculeConv)) {
+                            return matriculeConv;
+                        } else {
+                            System.out.println("Ce médecin n'existe pas !");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("mauvais format de texte");
+                    }
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Illegal argument matricule menu");
+        }
+        return -1;
     }
 
-    public Date getDate() {
-        return date;
+    private static int secSocMenu() {
+        Scanner scanner = new Scanner(System.in);
+        try {
+
+            String menu = "===============\n" +
+                    "Enter a Social Security Number :\n" +
+                    "===============\n";
+
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("exit")) {
+                    return -1;
+                } else if (args.length > 0) {
+                    try {
+                        int secSocConv = Integer.parseInt(args[0]);
+                        if (Patient.getPatients().containsKey(secSocConv)) {
+                            return secSocConv;
+                        } else {
+                            System.out.println("Ce patient n'existe pas !");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("mauvais format de texte");
+                    }
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Illegal argument secsoc menu");
+        }
+        return -1;
     }
 
-    public static Map<String, Appointment> getAppointments() {
-        return appointments;
-    }
+    public static void editAppointment(String name) {
+        AppointmentObject appointment;
+        if (getAppointments().containsKey(name)) {
+            appointment = getAppointments().get(name);
+        } else {
+            System.out.println("Ce appointment n'existe pas");
+            return;
+        }
 
-    public String getName() {
-        return name;
-    }
+        String menu = "===============\n" +
+                "1 - name : change appointment name\n" +
+                "2 - place : change appointment place\n" +
+                "3 - date : change appointment date\n" +
+                "4 - secsoc : change appointment social security number\n" +
+                "5 - matricule : change appointment matricule\n" +
+                "" +
+                "0 - exit : back to the previous menu\n" +
+                "===============\n";
+        Scanner scanner = new Scanner(System.in);
+        try {
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
 
-    public String getPlace() {
-        return place;
+                if (command.startsWith("1") || command.startsWith("name")) {
+                    String newName = stringMenu("name");
+                    if (newName != null) {
+                        appointmentsObject.remove(name);
+                        appointmentsObject.put(newName, appointment.setName(newName));
+                        System.out.println("edited name");
+                    } else {
+                        System.out.println("Annulation");
+                        return;
+                    }
+                } else if (command.startsWith("2") || command.startsWith("place")) {
+                    String place = stringMenu("place");
+                    if (place != null) {
+                        appointmentsObject.replace(appointment.getName(), appointment.setPlace(place));
+                        System.out.println("edited place");
+                    } else {
+                        System.out.println("Annulation");
+                        return;
+                    }
+                } else if (command.startsWith("3") || command.startsWith("date")) {
+                    Date date = dateMenu();
+                    if (date != null) {
+                        appointmentsObject.replace(appointment.getName(), appointment.setDate(date));
+                        System.out.println("edited date");
+                    } else {
+                        System.out.println("Annulation");
+                    }
+                } else if (command.startsWith("4") || command.startsWith("secsoc")) {
+                    int secSoc = secSocMenu();
+                    if (secSoc != -1) {
+                        appointmentsObject.replace(appointment.getName(), appointment.setSecSoc(secSoc));
+                        System.out.println("edited sec soc");
+                    } else {
+                        System.out.println("Annulation");
+                    }
+                } else if (command.startsWith("5") || command.startsWith("matricule")) {
+                    int matricule = matriculeMenu();
+                    if (matricule != -1) {
+                        appointmentsObject.replace(appointment.getName(), appointment.setMatricule(matricule));
+                        System.out.println("edited matricule");
+                    } else {
+                        System.out.println("Annulation");
+                    }
+                } else if (command.startsWith("0") || command.startsWith("exit")) {
+                    return;
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Illegal argument edit appointment menu");
+        }
     }
-
 }

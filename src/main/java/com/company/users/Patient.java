@@ -1,93 +1,29 @@
 package com.company.users;
 
+import com.company.users.usersobjects.PatientObject;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Patient extends User {
+public class Patient {
 
-    private static final Map<Integer, Patient> patients = new HashMap<Integer, Patient>();
+    private static final Map<Integer, PatientObject> patientsObject = new HashMap<Integer, PatientObject>();
 
-    private int secSoc;
-    private String postalAdress;
-    private String phoneNumber;
-    private String mailAdress;
-
-    public static Patient gets(Integer secSoc, Patient patient) {
-        if (!patients.containsKey(secSoc)) {
+    public static PatientObject gets(Integer secSoc, PatientObject patient) {
+        if (!patientsObject.containsKey(secSoc)) {
             System.out.println("New patient added.");
-            patients.put(secSoc, patient);
+            patientsObject.put(secSoc, patient);
         } else {
             System.out.println("User already exist");
         }
-        return patients.get(secSoc);
+        return patientsObject.get(secSoc);
     }
 
-    public Patient(String lastName, String firstName, int secSoc, String postalAdress, String phoneNumber, String mailAdress) {
-        setName(lastName);
-        setFirstName(firstName);
-        this.secSoc = secSoc;
-        this.postalAdress = postalAdress;
-        this.phoneNumber = phoneNumber;
-        this.mailAdress = mailAdress;
-    }
-
-    @Override
-    public String getName() {
-        return super.getName();
-    }
-
-    @Override
-    public String getFirstName() {
-        return super.getFirstName();
-    }
-
-    public int getSecSoc() {
-        return secSoc;
-    }
-
-    public String getMailAdress() {
-        return mailAdress;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getPostalAdress() {
-        return postalAdress;
-    }
-
-    public static Map<Integer, Patient> getPatients() {
-        return patients;
-    }
-
-    @Override
-    public void setName(String name) {
-        super.setName(name);
-    }
-
-    @Override
-    public void setFirstName(String firstName) {
-        super.setFirstName(firstName);
-    }
-
-    public void setMailAdress(String mailAdress) {
-        this.mailAdress = mailAdress;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void setPostalAdress(String postalAdress) {
-        this.postalAdress = postalAdress;
-    }
-
-    public void setSecSoc(int secSoc) {
-        this.secSoc = secSoc;
+    public static Map<Integer, PatientObject> getPatients() {
+        return patientsObject;
     }
 
     private  static String mailAdressMenu() {
@@ -141,7 +77,7 @@ public class Patient extends User {
                 } else if (args.length > 0) {
                     try {
                         int matriculeConv = Integer.parseInt(args[0]);
-                        if (!patients.containsKey(matriculeConv)) {
+                        if (!patientsObject.containsKey(matriculeConv)) {
                             return matriculeConv;
                         } else {
                             System.out.println("Ce numéro est déjà utilisé !");
@@ -217,17 +153,18 @@ public class Patient extends User {
         if (phoneNumber == null) {
             return;
         }
-        Patient.gets(secSoc, new Patient(lastName, firstName, secSoc, postalAdress, phoneNumber, mailAdress));
+        //Patient.gets(secSoc, new Patient(lastName, firstName, secSoc, postalAdress, phoneNumber, mailAdress));
+        Patient.gets(secSoc, new PatientObject(secSoc, lastName, firstName, mailAdress, postalAdress, phoneNumber));
     }
 
     public static void display(String secSoc) {
         System.out.println("SEC SOC     | NOM        | PRENOM      | MAIL ADRESS   | POSTAL ADRESS     | PHONE NUMBER    | HOSPITALS     ");
         if (secSoc != null) {
             try {
-                if (patients.containsKey(Integer.parseInt(secSoc))) {
-                    Patient patient = patients.get(Integer.parseInt(secSoc));
+                if (patientsObject.containsKey(Integer.parseInt(secSoc))) {
+                    PatientObject patient = patientsObject.get(Integer.parseInt(secSoc));
                     System.out.println(patient.getSecSoc() + " | " + patient.getName() + " | " + patient.getFirstName() +
-                            " | " + patient.getMailAdress() + " | " + patient.getPostalAdress() + " | " + patient.getPhoneNumber());
+                            " | " + patient.getMailAdress() + " | " + patient.getPostalAddress() + " | " + patient.getPhoneNumber());
                 } else {
                     System.out.println("Ce patient n'existe pas");
                 }
@@ -236,9 +173,9 @@ public class Patient extends User {
             }
         } else {
             System.out.println("");
-            for (Patient patient : getPatients().values()) {
+            for (PatientObject patient : getPatients().values()) {
                 System.out.println(patient.getSecSoc() + " | " + patient.getName() + " | " + patient.getFirstName() +
-                        " | " + patient.getMailAdress() + " | " + patient.getPostalAdress() + " | " + patient.getPhoneNumber());
+                        " | " + patient.getMailAdress() + " | " + patient.getPostalAddress() + " | " + patient.getPhoneNumber());
             }
         }
     }
@@ -260,8 +197,8 @@ public class Patient extends User {
                 } else if (args.length == 1){
                     try {
                         int secSoc = Integer.parseInt(args[0]);
-                        if (patients.containsKey(secSoc)) {
-                            patients.remove(secSoc);
+                        if (patientsObject.containsKey(secSoc)) {
+                            patientsObject.remove(secSoc);
                             System.out.println("Deleted patient");
                             break;
                         } else {
@@ -280,7 +217,7 @@ public class Patient extends User {
     }
 
     public static void editPatient(String oldSecSoc) {
-        Patient patient;
+        PatientObject patient;
         try {
             int testSecSoc = Integer.parseInt(oldSecSoc);
             if (getPatients().containsKey(testSecSoc)) {
@@ -314,22 +251,25 @@ public class Patient extends User {
                     int secSoc = secSocMenu();
                     if (secSoc == -1) {
                         System.out.println("Annulation");
+                        return;
                     } else {
-                        patient.setSecSoc(secSoc);
+                        patientsObject.remove(patient.getSecSoc());
+                        patientsObject.put(secSoc, patient.setSecSoc(secSoc));
                         System.out.println("edited social security number");
                     }
                 } else if (command.startsWith("2") || command.startsWith("name")) {
                     String lastName = stringMenu("last name");
                     if (lastName != null) {
-                        patient.setName(lastName);
+                        patientsObject.put(patient.getSecSoc(), patient.setName(lastName));
                         System.out.println("edited last name");
                     } else {
                         System.out.println("Annulation");
+                        return;
                     }
                 } else if (command.startsWith("3") || command.startsWith("firstname")) {
                     String firstName = stringMenu("first name");
                     if (firstName != null) {
-                        patient.setFirstName(firstName);
+                        patientsObject.put(patient.getSecSoc(), patient.setFirstName(firstName));
                         System.out.println("edited first name");
                     } else {
                         System.out.println("Annulation");
@@ -337,7 +277,7 @@ public class Patient extends User {
                 } else if (command.startsWith("4") || command.startsWith("mail")) {
                     String mailAddress = mailAdressMenu();
                     if (mailAddress != null) {
-                        patient.setMailAdress(mailAddress);
+                        patientsObject.put(patient.getSecSoc(), patient.setMailAdress(mailAddress));
                         System.out.println("edited mail address");
                     } else {
                         System.out.println("Annulation");
@@ -345,7 +285,7 @@ public class Patient extends User {
                 } else if (command.startsWith("5") || command.startsWith("address")) {
                     String address = stringMenu("postal address");
                     if (address != null) {
-                        patient.setPostalAdress(address);
+                        patientsObject.put(patient.getSecSoc(), patient.setPostalAddress(address));
                         System.out.println("edited postal address");
                     } else {
                         System.out.println("Annulation");
@@ -353,7 +293,7 @@ public class Patient extends User {
                 } else if (command.startsWith("6") || command.startsWith("phone")) {
                     String phone = stringMenu("phone number");
                     if (phone != null) {
-                        patient.setPhoneNumber(phone);
+                        patientsObject.put(patient.getSecSoc(), patient.setPhoneNumber(phone));
                         System.out.println("Edited phone number");
                     } else {
                         System.out.println("Annulation");

@@ -1,18 +1,14 @@
 package com.company.users;
 
+import com.company.users.usersobjects.DoctorObject;
+
 import java.util.*;
 
-public class Doctor extends User {
+public class Doctor {
 
-    private static final Map<Integer, Doctor> doctors = new HashMap<Integer, Doctor>();
+    private static final Map<Integer, DoctorObject> doctors = new HashMap<Integer, DoctorObject>();
 
-    private int matricule;
-    private List<String> specialty;
-    private String degree;
-    private int hourlyRate;
-    private String hospital;
-
-    public static Doctor gets(Integer integer, Doctor doctor) {
+    public static DoctorObject gets(Integer integer, DoctorObject doctor) {
         if (!doctors.containsKey(integer)) {
             System.out.println("Created new doctor");
             doctors.put(integer, doctor);
@@ -20,76 +16,8 @@ public class Doctor extends User {
         return doctors.get(integer);
     }
 
-    public Doctor(String lastName, String firstName, int matricule, List<String> specialty, String degree, int hourlyRate, String hospital) {
-        setName(lastName);
-        setFirstName(firstName);
-        this.matricule = matricule;
-        this.specialty = specialty;
-        this.degree = degree;
-        this.hourlyRate = hourlyRate;
-        this.hospital = hospital;
-    }
-
-    /*GETTER*/
-    @Override
-    public String getName() {
-        return super.getName();
-    }
-
-    @Override
-    public String getFirstName() {
-        return super.getFirstName();
-    }
-
-    public int getMatricule() {
-        return matricule;
-    }
-
-    public List<String> getSpecialty() {
-        return specialty;
-    }
-
-    public String getDegree() {
-        return degree;
-    }
-
-    public int getHourlyRate() {
-        return hourlyRate;
-    }
-
-    public String getHospital() { return hospital; }
-
-    public static Map<Integer, Doctor> getDoctors() {
+    public static Map<Integer, DoctorObject> getDoctors() {
         return doctors;
-    }
-
-    /*SETTER*/
-    @Override
-    public void setName(String name) {
-        super.setName(name);
-    }
-
-    @Override
-    public void setFirstName(String firstName) {
-        super.setFirstName(firstName);
-    }
-
-    public void setMatricule(int matricule) { this.matricule = matricule; }
-
-    public void setSpecialty(List<String> specialty) {
-        this.specialty = specialty;
-    }
-
-    public void setDegree(String degree) {
-        this.degree = degree;
-    }
-
-    public void setHourlyRate(int hourlyRate) {
-        this.hourlyRate = hourlyRate;
-    }
-
-    public void setHospital(String hospital) {
-        this.hospital = hospital;
     }
 
     private static int intMenu(String what) {
@@ -225,7 +153,7 @@ public class Doctor extends User {
             return;
         }
 
-        Doctor.gets(matricule, new Doctor(lastName, firstName, matricule, specialty, degree, hourlyRate, hospital));
+        Doctor.gets(matricule, new DoctorObject(matricule, lastName, firstName, degree, hourlyRate, hospital, specialty));
     }
 
     public static void display(String matricule) {
@@ -233,10 +161,9 @@ public class Doctor extends User {
         if (matricule != null) {
             try {
                 if (doctors.containsKey(Integer.parseInt(matricule))) {
-                    Doctor doctor = doctors.get(Integer.parseInt(matricule));
+                    DoctorObject doctor = doctors.get(Integer.parseInt(matricule));
                     System.out.println(doctor.getMatricule() + " | " + doctor.getName() + " | " + doctor.getFirstName() +
-                            " | " +
-                            doctor.getSpecialty().toString().replaceAll("\\[", "").replaceAll("]", "") +
+                            " | " + doctor.getSpecialty().toString() +
                             " | " + doctor.getDegree() + " | " + doctor.getHourlyRate() +
                             " | " + doctor.getHospital());
                 } else {
@@ -247,7 +174,7 @@ public class Doctor extends User {
             }
         } else {
             System.out.println("");
-            for (Doctor doctor : getDoctors().values()) {
+            for (DoctorObject doctor : getDoctors().values()) {
                 System.out.println(doctor.getMatricule() + " | " + doctor.getName() + " | " + doctor.getFirstName() +
                         " | " + doctor.getSpecialty().toString() + " | " + doctor.getDegree() + " | " + doctor.getHourlyRate() +
                         " | " + doctor.getHospital());
@@ -289,6 +216,86 @@ public class Doctor extends User {
 
         } catch (IllegalStateException e){
             System.out.println("Error while creating appointment");
+        }
+    }
+
+    public static void editDoctor(String oldMatricule) {
+        DoctorObject doctor;
+        try {
+            int testMatricule = Integer.parseInt(oldMatricule);
+            if (getDoctors().containsKey(testMatricule)) {
+                doctor = getDoctors().get(testMatricule);
+            } else {
+                System.out.println("Ce docteur n'existe pas");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Soucis de format edit doctor");
+            return;
+        }
+
+        String menu = "===============\n" +
+                "1 - matricule : change matricule of the doctor\n" +
+                "2 - specialty : change specialty of the doctor\n" +
+                "3 - degree : change degree of the doctor\n" +
+                "4 - hourlyRate : change hourly of the doctor\n" +
+                "5 - hospital : change hospital\n" +
+                "0 - exit : back to the previous menu\n" +
+                "===============\n";
+        Scanner scanner = new Scanner(System.in);
+        try {
+            while (true) {
+                System.out.println(menu);
+                String command = scanner.nextLine();
+                String[] args = command.split(" ");
+
+                if (command.startsWith("1") || command.startsWith("matricule")) {
+                    int matricule = matriculeMenu();
+                    if (matricule == -1) {
+                        System.out.println("Annulation");
+                    } else {
+                        doctors.remove(doctor.getMatricule());
+                        doctors.put(doctor.getMatricule(), doctor.setMatricule(matricule));
+                        System.out.println("edited matricule");
+                    }
+                } else if (command.startsWith("2") || command.startsWith("specialty")) {
+                    String specialty = stringMenu("specialty");
+                    if (specialty != null) {
+                        doctors.replace(doctor.getMatricule(), doctor.setSpecialty(Arrays.asList(specialty.split(" "))));
+                        System.out.println("edited specialty");
+                    } else {
+                        System.out.println("Annulation");
+                    }
+                } else if (command.startsWith("3") || command.startsWith("degree")) {
+                    String degree = stringMenu("degree");
+                    if (degree != null) {
+                        doctors.replace(doctor.getMatricule(), doctor.setDegree(degree));
+                        System.out.println("edited degree");
+                    } else {
+                        System.out.println("Annulation");
+                    }
+                } else if (command.startsWith("4") || command.startsWith("hourlyRate")) {
+                    int hourlyRate = intMenu( "hourlyRate");
+                    if (hourlyRate != -1) {
+                        doctors.replace(doctor.getMatricule(), doctor.setHourlyRate(hourlyRate));
+                        System.out.println("edited hourlyRate");
+                    } else {
+                        System.out.println("Annulation");
+                    }
+                } else if (command.startsWith("5") || command.startsWith("hospital")) {
+                    String hospital = stringMenu("hospital");
+                    if (hospital != null) {
+                        doctors.replace(doctor.getMatricule(), doctor.setHospital(hospital));
+                        System.out.println("hospital edited");
+                    } else {
+                        System.out.println("Annulation");
+                    }
+                } else if (command.startsWith("0") || command.startsWith("exit")) {
+                    return;
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Illegal argument edit patient menu");
         }
     }
 }

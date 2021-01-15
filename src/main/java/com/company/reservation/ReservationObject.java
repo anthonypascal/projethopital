@@ -17,4 +17,49 @@ public class ReservationObject {
         this.secSoc = secSoc;
         this.matricule = matricule;
     }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public int getMatricule() {
+        return matricule;
+    }
+
+    public int getRoom() {
+        return room;
+    }
+
+    public int getSecSoc() {
+        return secSoc;
+    }
+
+    public ReservationObject setDate(Date date) {
+        this.date = date;
+        return this;
+    }
+
+    public ReservationObject setDuration(int duration) {
+        this.duration = duration;
+        return this;
+    }
+
+    public ReservationObject setMatricule(int matricule) {
+        this.matricule = matricule;
+        return this;
+    }
+
+    public ReservationObject setRoom(int room) {
+        this.room = room;
+        return this;
+    }
+
+    public ReservationObject setSecSoc(int secSoc) {
+        this.secSoc = secSoc;
+        return this;
+    }
 }
